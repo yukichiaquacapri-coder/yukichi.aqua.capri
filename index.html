@@ -1,65 +1,77 @@
-
-
 <!DOCTYPE html>
-<html>
+<html lang="ja">
 <head>
 <meta charset="UTF-8">
 <title>星のチケット発行所</title>
+<style>
+  body { font-family: sans-serif; padding: 20px; background-color: #f7f3f9; color: #333; }
+  h1 { color: #5c3d7c; }
+  input, button { margin: 5px 0; padding: 5px; font-size: 1rem; }
+  button { cursor: pointer; background-color: #5c3d7c; color: white; border: none; border-radius: 5px; }
+  #result { margin-top: 15px; white-space: pre-line; font-weight: bold; }
+</style>
 </head>
 
 <body>
 
 <h1>星のチケット発行所</h1>
-<p>誕生日を入力してください</p>
 
+<p>誕生日</p>
 <input type="date" id="birthday">
- <br>  <br> 
- 出生時間：
-<input type="time" id="birthtime"> 
- <br>  <br>   
- 出生地：
-<input type="text" id="birthtplace" placeholder="Tokyo"> 
- 
-  <button onclick="getSign()">発行</button>
 
-<h2 id="result"></h2>
+<p>出生時間</p>
+<input type="time" id="birthtime">
+
+<p>出生地</p>
+<input type="text" id="birthplace" placeholder="Tokyo">
+
+<br><br>
+
+<button onclick="showData()">チケット表示</button>
+
+<p id="result"></p>
 
 <script>
-
-function getSign(){
-
- let birthdate = document.getElementById("birthday").value;
-let birthtime = document.getElementById("birthtime").value;
-let birthplace = document.getElementById("birthplace").value;
-
-console.log(birthdate);
-console.log(birthtime);
-console.log(birthplace);
-
-let date = new Date(document.getElementById("birthday").value);
-let m = date.getMonth()+1;
-let d = date.getDate();
-
-let sign="";
-
-if((m==3&&d>=21)||(m==4&&d<=19)) sign="牡羊座";
-else if((m==4&&d>=20)||(m==5&&d<=20)) sign="牡牛座";
-else if((m==5&&d>=21)||(m==6&&d<=21)) sign="双子座";
-else if((m==6&&d>=22)||(m==7&&d<=22)) sign="蟹座";
-else if((m==7&&d>=23)||(m==8&&d<=22)) sign="獅子座";
-else if((m==8&&d>=23)||(m==9&&d<=22)) sign="乙女座";
-else if((m==9&&d>=23)||(m==10&&d<=23)) sign="天秤座";
-else if((m==10&&d>=24)||(m==11&&d<=22)) sign="蠍座";
-else if((m==11&&d>=23)||(m==12&&d<=21)) sign="射手座";
-else if((m==12&&d>=22)||(m==1&&d<=19)) sign="山羊座";
-else if((m==1&&d>=20)||(m==2&&d<=18)) sign="水瓶座";
-else sign="魚座";
-
-document.getElementById("result").innerText =
-"あなたの星のチケット： "+sign;
-
+// 太陽星座の簡易計算（境界はざっくり）
+function getSunSign(month, day) {
+  const zodiac = [
+    { sign: "Capricorn", end: 19 },
+    { sign: "Aquarius", end: 18 },
+    { sign: "Pisces", end: 20 },
+    { sign: "Aries", end: 19 },
+    { sign: "Taurus", end: 20 },
+    { sign: "Gemini", end: 20 },
+    { sign: "Cancer", end: 22 },
+    { sign: "Leo", end: 22 },
+    { sign: "Virgo", end: 22 },
+    { sign: "Libra", end: 22 },
+    { sign: "Scorpio", end: 21 },
+    { sign: "Sagittarius", end: 21 }
+  ];
+  return day > zodiac[month-1].end
+    ? zodiac[month % 12].sign
+    : zodiac[month-1].sign;
 }
 
+function showData() {
+  let birthdate = document.getElementById("birthday").value;
+  let birthtime = document.getElementById("birthtime").value;
+  let birthplace = document.getElementById("birthplace").value;
+
+  let sunSign = "";
+  if (birthdate) {
+    const parts = birthdate.split("-");
+    const month = parseInt(parts[1],10);
+    const day = parseInt(parts[2],10);
+    sunSign = getSunSign(month, day);
+  }
+
+  document.getElementById("result").innerText =
+    "誕生日: " + birthdate +
+    "\n出生時間: " + birthtime +
+    "\n出生地: " + birthplace +
+    (sunSign ? "\n太陽星座: " + sunSign : "");
+}
 </script>
 
 </body>
