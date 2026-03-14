@@ -28,6 +28,14 @@
 
 function getSign(){
 
+ let birthdate = document.getElementById("birthday").value;
+let birthtime = document.getElementById("birthtime").value;
+let birthplace = document.getElementById("birthplace").value;
+
+console.log(birthdate);
+console.log(birthtime);
+console.log(birthplace);
+
 let date = new Date(document.getElementById("birthday").value);
 let m = date.getMonth()+1;
 let d = date.getDate();
