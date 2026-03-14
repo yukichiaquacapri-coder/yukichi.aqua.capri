@@ -1,0 +1,51 @@
+
+
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>星のチケット発行所</title>
+</head>
+
+<body>
+
+<h1>星のチケット発行所</h1>
+<p>誕生日を入力してください</p>
+
+<input type="date" id="birthday">
+<button onclick="getSign()">発行</button>
+
+<h2 id="result"></h2>
+
+<script>
+
+function getSign(){
+
+let date = new Date(document.getElementById("birthday").value);
+let m = date.getMonth()+1;
+let d = date.getDate();
+
+let sign="";
+
+if((m==3&&d>=21)||(m==4&&d<=19)) sign="牡羊座";
+else if((m==4&&d>=20)||(m==5&&d<=20)) sign="牡牛座";
+else if((m==5&&d>=21)||(m==6&&d<=21)) sign="双子座";
+else if((m==6&&d>=22)||(m==7&&d<=22)) sign="蟹座";
+else if((m==7&&d>=23)||(m==8&&d<=22)) sign="獅子座";
+else if((m==8&&d>=23)||(m==9&&d<=22)) sign="乙女座";
+else if((m==9&&d>=23)||(m==10&&d<=23)) sign="天秤座";
+else if((m==10&&d>=24)||(m==11&&d<=22)) sign="蠍座";
+else if((m==11&&d>=23)||(m==12&&d<=21)) sign="射手座";
+else if((m==12&&d>=22)||(m==1&&d<=19)) sign="山羊座";
+else if((m==1&&d>=20)||(m==2&&d<=18)) sign="水瓶座";
+else sign="魚座";
+
+document.getElementById("result").innerText =
+"あなたの星のチケット： "+sign;
+
+}
+
+</script>
+
+</body>
+</html>
