@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My Natal Chart - Star Calculator</title>
+    <title>Cosmic Calculator</title>
     <style>
         :root {
             --bg-color: #0f172a;
@@ -102,6 +102,7 @@
             resultDiv.innerHTML = "星の位置を計算中...";
 
             try {
+                // パラメータを組み立ててAPIを叩く
                 const params = new URLSearchParams({ date, time, lat, lng });
                 const response = await fetch(`/api/horoscope?${params}`);
                 
@@ -109,13 +110,14 @@
                 
                 const data = await response.json();
 
+                // 取得したデータを画面に反映
                 resultDiv.innerHTML = `
                     <div class="sign-data"><span>☀️ 太陽:</span> <strong>${data.sun}</strong></div>
                     <div class="sign-data"><span>🌙 月:</span> <strong>${data.moon}</strong></div>
                     <div class="sign-data"><span>⬆️ アセンダント:</span> <strong>${data.asc}</strong></div>
                 `;
             } catch (error) {
-                resultDiv.innerText = "計算に失敗しました。URLを確認してください。";
+                resultDiv.innerText = "計算に失敗しました。Vercelのデプロイ状況を確認してください。";
                 console.error(error);
             }
         }
