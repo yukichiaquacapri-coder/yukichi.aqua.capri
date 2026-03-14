@@ -14,6 +14,8 @@
   <script>
   async function getHoroscope() {
     try {
+      //const response = await fetch("/api/horoscope");
+      // 絶対パスで指定すると、同じドメイン内の /api/horoscope を探しに行きます
       const response = await fetch("/api/horoscope");
       const data = await response.json();
       document.getElementById("result").innerText =
