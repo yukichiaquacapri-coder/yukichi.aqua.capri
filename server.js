@@ -6,7 +6,7 @@ import { fileURLToPath } from 'url';
 const app = express();
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
-// HTMLファイルを表示できるようにする
+// フロントエンド（index.html）を公開
 app.use(express.static(__dirname));
 
 app.get('/api/horoscope', (req, res) => {
@@ -16,7 +16,7 @@ app.get('/api/horoscope', (req, res) => {
         const [hour, min] = time.split(':').map(Number);
         const ut = hour + min / 60;
         
-        // スイス・エフェメリスによる精密計算
+        // スイス・エフェメリス精密計算
         const jd = swisseph.swe_julday(year, month, day, ut, swisseph.SE_GREG_CAL);
         const signs = ["牡羊座", "牡牛座", "双子座", "蟹座", "獅子座", "乙女座", "天秤座", "蠍座", "射手座", "山羊座", "水瓶座", "魚座"];
 
@@ -27,7 +27,7 @@ app.get('/api/horoscope', (req, res) => {
             return `${signs[Math.floor(long / 30)]} ${(long % 30).toFixed(2)}°${retro}`;
         };
 
-        // ASC（ハウス）の計算
+        // ASC計算
         const houses = swisseph.swe_houses(jd, parseFloat(lat), parseFloat(lng), 'P');
 
         res.json({
@@ -37,11 +37,11 @@ app.get('/api/horoscope', (req, res) => {
             ascPos: `${signs[Math.floor(houses.ascendant / 30)]} ${(houses.ascendant % 30).toFixed(2)}°`
         });
     } catch (e) {
-        res.status(500).json({ error: "Calculation Error" });
+        res.status(500).json({ error: "Calculation Failed" });
     }
 });
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, '0.0.0.0', () => {
-    console.log(`Server is live on port ${PORT}`);
+    console.log(`Server is running on port ${PORT}`);
 });
