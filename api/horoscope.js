@@ -1,29 +1,10 @@
-import { Origin, Chart } from 'astrology-js';
-
-export default async function handler(req, res) {
+export default function handler(req, res) {
     const { date, time, lat, lng } = req.query;
     
-    try {
-        const [year, month, day] = date.split('-').map(Number);
-        const [hour, minute] = time.split(':').map(Number);
-
-        const origin = new Origin({
-            year, month, day, hour, minute,
-            latitude: parseFloat(lat),
-            longitude: parseFloat(lng),
-        });
-
-        const chart = new Chart(origin);
-        const signs = ["牡羊座", "牡牛座", "双子座", "蟹座", "獅子座", "乙女座", "天秤座", "蠍座", "射手座", "山羊座", "水瓶座", "魚座"];
-        
-        const format = (body) => `${signs[body.sign - 1]} ${body.longitudeInSign.toFixed(2)}°`;
-
-        res.status(200).json({
-            sunPos: format(chart.sun),
-            moonPos: format(chart.moon),
-            ascPos: `${signs[chart.ascendant.sign - 1]} ${chart.ascendant.longitudeInSign.toFixed(2)}°`
-        });
-    } catch (e) {
-        res.status(500).json({ error: "計算エラーが発生しました" });
-    }
+    // 計算の代わりに、受け取った値をそのまま返すテストです
+    res.status(200).json({
+        sunPos: `テスト成功: ${date} 生まれ`,
+        moonPos: `緯度 ${lat}`,
+        ascPos: `経度 ${lng}`
+    });
 }
