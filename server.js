@@ -2,31 +2,27 @@ import express from 'express';
 import swisseph from 'swisseph';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import cors from 'cors'; // npm install cors が必要になるかもしれません
-app.use(cors()); // これでどこからの呼び出しも許可されます
+import cors from 'cors'; // corsをインポート
 
-const app = express();
+const app = express(); // 1. まず「app」を作る（これより上にapp.useは書けません）
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
-// フロントエンドファイルを公開
+// 2. 「app」を作った直後に設定を入れる
+app.use(cors()); 
 app.use(express.static(__dirname));
 
 app.get('/api/horoscope', (req, res) => {
-    // index.htmlから送られてくる時差(offset)を受け取る
     const { date, time, lat, lng, offset } = req.query;
     
     try {
         const [year, month, day] = date.split('-').map(Number);
         const [hour, min] = time.split(':').map(Number);
         
-        // ユーザーの時差を考慮して世界標準時(UT)に変換
-        // 例: 日本(JST)なら offset は -540 なので、(-540/60) = -9時間を足してUTにする
+        // 時差計算
         const ut = (hour + min / 60) + (parseFloat(offset) / 60);
-        
         const jd = swisseph.swe_julday(year, month, day, ut, swisseph.SE_GREG_CAL);
         const signs = ["牡羊座", "牡牛座", "双子座", "蟹座", "獅子座", "乙女座", "天秤座", "蠍座", "射手座", "山羊座", "水瓶座", "魚座"];
 
-        // ハウス計算（プラシーダス法）
         const houses = swisseph.swe_houses(jd, parseFloat(lat), parseFloat(lng), 'P');
         const asc = houses.ascendant;
 
@@ -45,7 +41,7 @@ app.get('/api/horoscope', (req, res) => {
         });
     } catch (e) {
         console.error(e);
-        res.status(500).json({ error: "計算に失敗しました" });
+        res.status(500).json({ error: "計算エラー" });
     }
 });
 
