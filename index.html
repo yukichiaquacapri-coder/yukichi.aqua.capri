@@ -39,8 +39,7 @@
                 const response = await fetch(`/api/horoscope?${params}`);
                 const data = await response.json();
                 // 裏側のAPIが返す名前(sunPos, moonPos, ascPos)に厳密に合わせます
-                resDiv.innerHTML = `☀️ 太陽: <strong>${data.sunPos}</strong><br>🌙 月: <strong>${data.moonPos}</strong><br>⬆️ ASC: <strong>${data.ascPos}</strong>`;
-            } catch (e) {
+                resDiv.innerHTML = `☀️ 太陽: <strong>${data.sunPos}</strong><br>🌙 月: <strong>${data.moonPos}</strong><br>♂️ 火星: <strong>${data.marsPos}</strong><br>⬆️ ASC: <strong>${data.ascPos}</strong>`;
                 resDiv.innerText = "計算失敗。もう一度試してね！";
             }
         }
