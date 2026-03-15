@@ -16,7 +16,11 @@ export default function handler(req, res) {
     const julianDay = swisseph.swe_julday(year, month, day, utHour, swisseph.SE_GREG_CAL);
 
     const signs = ["牡羊座", "牡牛座", "双子座", "蟹座", "獅子座", "乙女座", "天秤座", "蠍座", "射手座", "山羊座", "水瓶座", "魚座"];
-    const getSign = (long) => signs[Math.floor(long / 30)] + ` (${(long % 30).toFixed(2)}°)`;
+    const getSign = (long) => {
+        const signIndex = Math.floor(long / 30);
+        const degree = (long % 30).toFixed(2);
+        return `${signs[signIndex]} ${degree}°`;
+    };
 
     // 太陽の位置計算
     swisseph.swe_calc_ut(julianDay, swisseph.SE_SUN, swisseph.SEFLG_SPEED, (res_sun) => {
