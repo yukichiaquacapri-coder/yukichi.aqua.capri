@@ -2,29 +2,90 @@
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
-    <title>Cosmic Calculator</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>宇宙計算機 - 全世界公開版</title>
     <style>
-        :root { --bg: #0f172a; --card: #1e293b; --accent: #38bdf8; --text: #f8fafc; }
-        body { font-family: sans-serif; background: var(--bg); color: var(--text); text-align: center; padding: 40px 20px; }
-        .container { background: var(--card); padding: 30px; border-radius: 20px; display: inline-block; max-width: 400px; width: 100%; box-shadow: 0 10px 25px rgba(0,0,0,0.3); }
-        h1 { color: var(--accent); }
-        input { width: 100%; padding: 10px; margin: 10px 0; border-radius: 8px; border: 1px solid #334155; background: #0f172a; color: white; box-sizing: border-box; }
-        button { width: 100%; padding: 12px; margin-top: 10px; background: var(--accent); color: #0f172a; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; }
-        #result { margin-top: 30px; padding: 20px; background: rgba(56,189,248,0.1); border-radius: 12px; text-align: left; line-height: 2; }
+        body {
+            background-color: #0d1b2a;
+            color: #e0e1dd;
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+        }
+        .container {
+            background-color: #1b263b;
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+        }
+        h1 { color: #4cc9f0; margin-bottom: 1.5rem; }
+        input {
+            width: 100%;
+            padding: 12px;
+            margin: 8px 0;
+            border-radius: 8px;
+            border: none;
+            background-color: #0d1b2a;
+            color: white;
+            box-sizing: border-box;
+        }
+        button {
+            width: 100%;
+            padding: 15px;
+            margin-top: 15px;
+            border-radius: 8px;
+            border: none;
+            background-color: #4cc9f0;
+            color: #0d1b2a;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        button:hover { background-color: #4361ee; color: white; }
+        #result {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #0d1b2a;
+            border-radius: 8px;
+            min-height: 50px;
+            line-height: 1.6;
+        }
+        .coord-group { display: flex; gap: 10px; }
     </style>
 </head>
 <body>
+
+<div class="container">
     <h1>宇宙計算機</h1>
-    <div class="container">
-        <input type="date" id="date" value="1993-01-22">
-        <input type="time" id="time" value="09:06">
-        <div style="display: flex; gap: 10px;">
-            <input type="number" id="lat" placeholder="緯度" step="0.01" value="43.06">
-            <input type="number" id="lng" placeholder="経度" step="0.01" value="141.35">
+    
+    <label>生年月日</label>
+    <input type="date" id="date" value="1993-01-22">
+    
+    <label>誕生時刻</label>
+    <input type="time" id="time" value="09:06">
+    
+    <div class="coord-group">
+        <div>
+            <label>緯度</label>
+            <input type="number" id="lat" value="43.06" step="0.01">
         </div>
-        <button onclick="calculate()">ネイタルチャートを計算</button>
-        <div id="result">ここに結果が表示されます</div>
+        <div>
+            <label>経度</label>
+            <input type="number" id="lng" value="141.35" step="0.01">
+        </div>
     </div>
+
+    <button onclick="calculate()">ネイタルチャートを計算</button>
+
+    <div id="result">ここに結果が表示されます</div>
+</div>
+
 <script>
 async function calculate() {
     const resDiv = document.getElementById('result');
@@ -41,16 +102,23 @@ async function calculate() {
     try {
         resDiv.innerHTML = "🌟 宇宙の配置を計算中...";
         
-        // RailwayのURLに向けてデータを送る
+        // RailwayのAPIを呼び出す（相対パスでOK）
         const resp = await fetch(`/api/horoscope?date=${date}&time=${time}&lat=${lat}&lng=${lng}`);
         
-        if (!resp.ok) throw new Error('Network error');
+        if (!resp.ok) {
+            throw new Error('サーバーエラーが発生しました');
+        }
         
         const data = await resp.json();
 
-        // 結果を表示する
+        if (data.error) {
+            resDiv.innerHTML = "計算エラー: " + data.error;
+            return;
+        }
+
+        // 結果を画面に表示
         resDiv.innerHTML = `
-            <div style="text-align: left; padding: 10px;">
+            <div style="text-align: left; padding: 5px;">
                 ☀️ 太陽: <strong>${data.sunPos}</strong><br>
                 🌙 月: <strong>${data.moonPos}</strong><br>
                 ♂️ 火星: <strong>${data.marsPos}</strong><br>
@@ -59,9 +127,10 @@ async function calculate() {
         `;
     } catch (error) {
         console.error('Error:', error);
-        resDiv.innerHTML = "計算に失敗しました。サーバーが準備中かもしれません。";
+        resDiv.innerHTML = "通信に失敗しました。サーバーのビルド完了を待ってから再試行してください。";
     }
 }
 </script>
+
 </body>
 </html>
