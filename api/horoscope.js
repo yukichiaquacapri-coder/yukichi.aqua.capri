@@ -19,11 +19,13 @@ export default function handler(req, res) {
         const chart = new Chart(origin);
         const signs = ["牡羊座", "牡牛座", "双子座", "蟹座", "獅子座", "乙女座", "天秤座", "蠍座", "射手座", "山羊座", "水瓶座", "魚座"];
 
+        // 星座名と度数を整形
         const formatPos = (obj) => {
             const s = signs[obj.sign - 1];
             return `${s} ${obj.longitudeInSign.toFixed(2)}°`;
         };
 
+        // ここで sun, moon, asc という名前をつけて送ります
         res.status(200).json({
             sun: formatPos(chart.sun),
             moon: formatPos(chart.moon),
