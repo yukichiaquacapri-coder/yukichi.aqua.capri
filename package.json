@@ -1,8 +1,10 @@
 {
-  "name": "yukichi-aqua-capri",
+  "name": "yukichi-cosmic-calc",
   "version": "1.0.0",
   "type": "module",
-  "dependencies": {},
+  "dependencies": {
+    "astrology-js": "latest"
+  },
   "engines": {
     "node": "20.x"
   }
