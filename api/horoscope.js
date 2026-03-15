@@ -24,6 +24,6 @@ export default async function handler(req, res) {
             ascPos: `${signs[chart.ascendant.sign - 1]} ${chart.ascendant.longitudeInSign.toFixed(2)}°`
         });
     } catch (e) {
-        res.status(500).json({ error: "計算エラー" });
+        res.status(500).json({ error: "計算エラーが発生しました" });
     }
 }
