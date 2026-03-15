@@ -105,7 +105,7 @@ async function calculate() {
        // index.html の calculate 関数内の fetch 部分を書き換え
 const timezoneOffset = new Date().getTimezoneOffset(); // ブラウザから時差（分）を取得
 
-const resp = await fetch(`/api/horoscope?date=${date}&time=${time}&lat=${lat}&lng=${lng}&offset=${timezoneOffset}`);
+const resp = await fetch(`https://yukichiaquacapri-production.up.railway.app/api/horoscope?...`);
         
         if (!resp.ok) {
             throw new Error('サーバーエラーが発生しました');
