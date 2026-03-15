@@ -1,28 +1,31 @@
 import express from 'express';
 import swisseph from 'swisseph';
-import path from 'path';
-import { fileURLToPath } from 'url';
-import cors from 'cors'; // corsをインポート
+import cors from 'cors';
 
-const app = express(); // 1. まず「app」を作る（これより上にapp.useは書けません）
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const app = express();
 
-// 2. 「app」を作った直後に設定を入れる
-app.use(cors()); 
-app.use(express.static(__dirname));
+// GitHub Pagesからのアクセスを許可
+app.use(cors());
 
 app.get('/api/horoscope', (req, res) => {
     const { date, time, lat, lng, offset } = req.query;
     
     try {
+        // データの欠落チェック
+        if (!date || !time || !lat || !lng) {
+            return res.status(400).json({ error: "入力データが足りません" });
+        }
+
         const [year, month, day] = date.split('-').map(Number);
         const [hour, min] = time.split(':').map(Number);
         
-        // 時差計算
-        const ut = (hour + min / 60) + (parseFloat(offset) / 60);
+        // 時差(UT)の計算：日本なら offset は -540
+        const ut = (hour + min / 60) + (parseFloat(offset || 0) / 60);
+        
         const jd = swisseph.swe_julday(year, month, day, ut, swisseph.SE_GREG_CAL);
         const signs = ["牡羊座", "牡牛座", "双子座", "蟹座", "獅子座", "乙女座", "天秤座", "蠍座", "射手座", "山羊座", "水瓶座", "魚座"];
 
+        // ハウス計算（プラシーダス法）
         const houses = swisseph.swe_houses(jd, parseFloat(lat), parseFloat(lng), 'P');
         const asc = houses.ascendant;
 
@@ -40,8 +43,8 @@ app.get('/api/horoscope', (req, res) => {
             ascPos: `${signs[Math.floor(asc / 30)]} ${(asc % 30).toFixed(2)}°`
         });
     } catch (e) {
-        console.error(e);
-        res.status(500).json({ error: "計算エラー" });
+        console.error("Calculation Error:", e);
+        res.status(500).json({ error: "計算エラーが発生しました" });
     }
 });
 
