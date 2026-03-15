@@ -36,7 +36,9 @@
             });
             resDiv.innerText = "星の位置を計算中...";
             try {
-                const response = await fetch(`/api/horoscope?${params}`);
+                //const response = await fetch(`/api/horoscope?${params}`);
+                // index.html内のfetch部分を以下に書き換え
+const resp = await fetch(`/api/horoscope?date=${date}&time=${time}&lat=${lat}&lng=${lng}`);
                 const data = await response.json();
                 // 裏側のAPIが返す名前(sunPos, moonPos, ascPos)に厳密に合わせます
                 resDiv.innerHTML = `☀️ 太陽: <strong>${data.sunPos}</strong><br>🌙 月: <strong>${data.moonPos}</strong><br>♂️ 火星: <strong>${data.marsPos}</strong><br>⬆️ ASC: <strong>${data.ascPos}</strong>`;
